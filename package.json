@@ -1,0 +1,24 @@
+{
+  "name": "decayingspace",
+  "version": "1.0.0",
+  "description": "\"A fun 2D space shoot-em-up!\"",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kingcanova/DecayingSpace.git"
+  },
+  "author": "Tristan Canova",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kingcanova/DecayingSpace/issues"
+  },
+  "homepage": "https://github.com/kingcanova/DecayingSpace#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "phaser-ce": "^2.10.0",
+    "socket.io": "^2.0.4"
+  }
+}
