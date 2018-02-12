@@ -1,9 +1,17 @@
 var express = require('express');
-//assign it to variable app 
 var app = express();
-//create a server and pass in app as a request handler
-var serv = require('http').Server(app); //Server-11
+var server = require('http').Server(app);
+var io = require('socket.io').listen(server);
 
+
+
+//var express = require('express');
+//assign it to variable app 
+//var app = express();
+//create a server and pass in app as a request handler
+//var serv = require('http').Server(app); //Server-11
+//var serv = app.listen(2000);
+//var io = require('socket.io').listen(serv);
 //send a index.html file when a get request is fired to the given 
 //route, which is ‘/’ in this case
 app.get('/',function(req, res) {
@@ -17,11 +25,13 @@ app.use('/client',express.static(__dirname + '/client'));
 app.use('/assets',express.static(__dirname + '/assets'));
 
 //listen on port 2000
-serv.listen(process.env.PORT || 2000);
-console.log("Server started.");
+//serv.listen(process.env.PORT || 2000);
+server.listen(2000,function(){ // Listens to port 8081
+    console.log('Listening on '+server.address().port);
+});
 
  // binds the serv object we created to socket.io
-var io = require('socket.io')(serv,{});
+//var io = require('socket.io')(serv,{});
 
 //this is where we will store all the players in the client,
 // which is connected to the server

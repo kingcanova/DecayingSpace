@@ -1,5 +1,5 @@
-var socket; // define a global variable called socket 
-socket = io.connect(); // send a connection request to the server
+var Client = {}; // define a global variable called socket 
+Client.socket = io.connect(); // send a connection request to the server
 
 var gHeight = 32 * 20;
 var gWidth = 32 * 20;
@@ -34,7 +34,7 @@ function onsocketConnected() {
 	gameProperties.in_game = true;
 	// send to the server a "new_player" message so that the server knows
 	// a new player object has been created
-	socket.emit('new_player', {x: 32, y: game.world.height-150, angle: 0});
+	Client.socket.emit('new_player', {x: 32, y: game.world.height-150, angle: 0});
 }
 
 // When the server notifies us of client disconnection, we find the disconnected
@@ -136,15 +136,15 @@ main.prototype = {
 		//listen to the “connect” message from the server. The server 
 		//automatically emit a “connect” message when the cleint connets.When 
 		//the client connects, call onsocketConnected.  
-		socket.on('connect', onsocketConnected); 
+		Client.socket.on('connect', onsocketConnected); 
         
         //listen to new enemy connections
-		socket.on('new_enemyPlayer', onNewPlayer);
+		Client.socket.on('new_enemyPlayer', onNewPlayer);
 		//listen to enemy movement 
-		socket.on('enemy_move', onEnemyMove);
+		Client.socket.on('enemy_move', onEnemyMove);
 		
 		// when received remove_player, remove the player passed; 
-		socket.on('remove_player', onRemovePlayer); 
+		Client.socket.on('remove_player', onRemovePlayer); 
 
 	},
     
@@ -159,7 +159,7 @@ main.prototype = {
             else if(cursors.down.isDown){player.body.reverse(100);}
             
             //Send a new position data to the server 
-			socket.emit('move_player', {x: player.x, y: player.y, angle: player.angle});
+			Client.socket.emit('move_player', {x: player.x, y: player.y, angle: player.angle});
         }
     }
     
