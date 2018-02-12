@@ -40,14 +40,12 @@ Game.update = function(){
     {
         if(cursors.left.isDown){Game.player.body.rotateLeft(100);}
         else if(cursors.right.isDown){Game.player.body.rotateRight(100);}
-        else if(cursors.left.isUp && cursors.right.isUp)
-        {
-            Game.player.body.setZeroRotation();
-        }
+        else{Game.player.body.setZeroRotation();}
         if(cursors.up.isDown){Game.player.body.thrust(200);}
         else if(cursors.down.isDown){Game.player.body.reverse(100);}
+        //console.log(Game.player.body.rotation);
+        Client.movePlayer({x: Game.player.body.x, y: Game.player.body.y, angle: Game.player.body.rotation});//WORKING ON THIS NEXT
     }
-    //Client.movePlayer({x: Game.playerInfo.x, y: Game.playerInfo.y, angle: Game.playerInfo.angle});
 };
 
 Game.createPlayer = function(id,x,y,angle){

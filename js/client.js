@@ -14,8 +14,8 @@ Client.askNewPlayer = function(){
     Client.socket.emit('newplayer');
 };
 
-Client.movePlayer = function(data){
-    Client.socket.emit('movePlayer',data);
+Client.movePlayer = function(x,y,angle){
+    Client.socket.emit('movePlayer',data);//////IM HERE TO RESTART
 };
 
 Client.socket.on('newplayer',function(data){
