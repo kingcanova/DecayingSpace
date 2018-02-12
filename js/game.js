@@ -30,18 +30,25 @@ Game.create = function(){
     }
     me.game.physics.startSystem(Phaser.Physics.P2JS);
     me.game.physics.p2.gravity.y = 0;
+    Game.createdPlayer = false;
     Client.askNewPlayer();
     
 };
 
-//Game.update = function(){
-//    if(cursors.left.isDown){Game.player.body.rotateLeft(100);}
-//    else if(cursors.right.isDown){Game.player.body.rotateRight(100);}
-//    else{Game.player.body.setZeroRotation();}
-//    if(cursors.up.isDown){Game.player.body.thrust(200);}
-//    else if(cursors.down.isDown){Game.player.body.reverse(100);}
-//    Client.movePlayer({x: Game.playerInfo.x, y: Game.playerInfo.y, angle: Game.playerInfo.angle});
-//};
+Game.update = function(){
+    if(Game.createdPlayer)
+    {
+        if(cursors.left.isDown){Game.player.body.rotateLeft(100);}
+        else if(cursors.right.isDown){Game.player.body.rotateRight(100);}
+        else if(cursors.left.isUp && cursors.right.isUp)
+        {
+            Game.player.body.setZeroRotation();
+        }
+        if(cursors.up.isDown){Game.player.body.thrust(200);}
+        else if(cursors.down.isDown){Game.player.body.reverse(100);}
+    }
+    //Client.movePlayer({x: Game.playerInfo.x, y: Game.playerInfo.y, angle: Game.playerInfo.angle});
+};
 
 Game.createPlayer = function(id,x,y,angle){
     Game.playerInfo = {
@@ -51,6 +58,7 @@ Game.createPlayer = function(id,x,y,angle){
         angle: angle
         
     };
+    Game.createdPlayer = true;
     Game.player = game.add.sprite(x,y,'sprite');
     game.physics.p2.enableBody(Game.player, true);
     console.log("create player with location:"+ x + " ," + y);
@@ -59,4 +67,10 @@ Game.createPlayer = function(id,x,y,angle){
 Game.addNewPlayer = function(id,x,y,angle){
     Game.playerMap[id] = game.add.sprite(x,y,'sprite');
     console.log("new player with location:"+ x + " ," + y);
+};
+
+Game.removePlayer = function(id){
+    console.log("removing a player");
+    Game.playerMap[id].destroy();
+    delete Game.playerMap[id];
 };
