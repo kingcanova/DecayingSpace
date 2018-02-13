@@ -48,6 +48,13 @@ Game.update = function(){
     }
 };
 
+Game.moveEnemy = function(id,x,y,angle){
+    enemy = Game.playerMap[id];
+    enemy.body.x = x;
+    enemy.body.y = y;
+    enemy.body.rotation = angle;
+};
+
 Game.createPlayer = function(id,x,y,angle){
     Game.playerInfo = {
         id: id,
@@ -63,7 +70,9 @@ Game.createPlayer = function(id,x,y,angle){
 };
 
 Game.addNewPlayer = function(id,x,y,angle){
-    Game.playerMap[id] = game.add.sprite(x,y,'sprite');
+    enemy = game.add.sprite(x,y,'sprite');
+    game.physics.p2.enableBody(enemy, true);
+    Game.playerMap[id] = enemy;
     console.log("new player with location:"+ x + " ," + y);
 };
 

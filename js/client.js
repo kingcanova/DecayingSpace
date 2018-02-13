@@ -14,7 +14,7 @@ Client.askNewPlayer = function(){
     Client.socket.emit('newplayer');
 };
 
-Client.movePlayer = function(x,y,angle){
+Client.movePlayer = function(data){
     Client.socket.emit('movePlayer',data);//////IM HERE TO RESTART
 };
 
@@ -28,16 +28,15 @@ Client.socket.on('myPlayer',function(data){
     Game.createPlayer(data.id,data.x,data.y,data.angle); 
 });
 
+Client.socket.on('move',function(data){
+   Game.moveEnemy(data.id,data.x,data.y,data.angle); 
+});
 
 Client.socket.on('allplayers',function(data){
     for(var i = 0; i < data.length; i++){
         Game.addNewPlayer(data[i].id,data[i].x,data[i].y,data[i].angle);
         //console.log("we should not have gotten here yet");
     }
-
-    Client.socket.on('move',function(data){
-        Game.movePlayer(data.id,data.x,data.y);
-    });
 
     Client.socket.on('remove',function(id){
         Game.removePlayer(id);
