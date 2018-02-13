@@ -12,7 +12,7 @@ Game.init = function(){
 Game.preload = function() {
     game.load.tilemap('map', 'assets/map/example_map.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.spritesheet('tileset', 'assets/map/tilesheet.png',32,32);
-    game.load.image('sprite','assets/sprites/car.png');
+    game.load.image('sprite','assets/sprites/ship.png');
     cursors = game.input.keyboard.createCursorKeys();
 };
 
