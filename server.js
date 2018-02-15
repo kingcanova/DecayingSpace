@@ -31,7 +31,7 @@ io.on('connection',function(socket){
             y: randomInt(100,400),
             angle: 0
         };
-        console.log("created new player object on server");
+        console.log("created new player object on server with ID:" + this.id);
         socket.emit('myPlayer',socket.player);
         socket.emit('allplayers',getAllPlayers(socket.player.id));
         socket.broadcast.emit('newplayer',socket.player);

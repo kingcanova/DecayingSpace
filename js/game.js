@@ -14,7 +14,7 @@ Game.preload = function() {
     game.load.tilemap('map', 'assets/map/example_map.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.spritesheet('tileset', 'assets/map/tilesheet.png',32,32);
     game.load.image('sprite','assets/sprites/ship.png');
-    game.load.spritesheet('bullet', 'assets/sprites/rgblaser.png', 4, 4);
+    game.load.image('bullet', 'assets/sprites/bullet.png');
     cursors = game.input.keyboard.createCursorKeys();
 };
 
@@ -40,17 +40,19 @@ Game.create = function(){
     Game.createdPlayer = false;
     
     var playerCollisionGroup = game.physics.p2.createCollisionGroup();
-    var bulletCollisionGroup = game.physics.p2.createCollisionGroup();
-    
-    var bullets = game.add.group();
-    bullets.enableBody = true;
-    bullets.physicsBodyType = Phaser.Physics.P2JS;
     
     
+    //Create bullet group
+    Game.bulletCollisionGroup = game.physics.p2.createCollisionGroup();
+    
+    Game.bullets = game.add.group();
+    Game.bullets.enableBody = true;
+    Game.bullets.physicsBodyType = Phaser.Physics.P2JS;
+    Game.bullets.createMultiple(10, 'bullet', 0, false);
     
     
     
-    
+    spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     
     Client.askNewPlayer();
     
@@ -66,14 +68,27 @@ Game.update = function(){
         else if(cursors.down.isDown){Game.player.body.reverse(100);}
         //console.log(Game.player.body.rotation);
         Client.movePlayer({x: Game.player.body.x, y: Game.player.body.y, angle: Game.player.body.rotation});
+        if(spaceKey.isDown)
+        {
+            var curBullet = Game.bullets.getFirstDead();
+            if(curBullet)
+            {
+                curBullet.reset(Game.player.body.x,Game.player.body.y);
+                //Then the velocity code
+                //curBullet.setAll('lifespan',2000);
+            }
+        }
     }
 };
 
 Game.moveEnemy = function(id,x,y,angle){
-    enemy = Game.playerMap[id];
-    enemy.body.x = x;
-    enemy.body.y = y;
-    enemy.body.rotation = angle;
+    if(Game.createdPlayer)
+    {
+        enemy = Game.playerMap[id];
+        enemy.body.x = x;
+        enemy.body.y = y;
+        enemy.body.rotation = angle;
+    }
 };
 
 Game.createPlayer = function(id,x,y,angle){
@@ -88,6 +103,9 @@ Game.createPlayer = function(id,x,y,angle){
     Game.player = game.add.sprite(x,y,'sprite');
     game.physics.p2.enableBody(Game.player, true);
     game.camera.follow(Game.player);
+    
+    
+    
     console.log("create player with location:"+ x + " ," + y);
 };
 
