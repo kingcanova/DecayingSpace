@@ -49,6 +49,7 @@ Game.create = function(){
     Game.bullets.enableBody = true;
     Game.bullets.physicsBodyType = Phaser.Physics.P2JS;
     Game.bullets.createMultiple(10, 'bullet', 0, false);
+    //Game.bullets.setALL('lifespan',1000);
     
     
     
@@ -73,8 +74,11 @@ Game.update = function(){
             var curBullet = Game.bullets.getFirstDead();
             if(curBullet)
             {
+                curBullet.lifespan = 2000;
                 curBullet.reset(Game.player.body.x,Game.player.body.y);
                 //Then the velocity code
+                curBullet.body.velocity.x = Game.player.body.x +5;
+                curBullet.body.velocity.y = Game.player.body.y +5;
                 //curBullet.setAll('lifespan',2000);
             }
         }
