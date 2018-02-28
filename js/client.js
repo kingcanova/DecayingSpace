@@ -15,6 +15,7 @@ Client.askNewPlayer = function(){
 };
 
 Client.movePlayer = function(data){
+    console.log("got to the client movePlayer function");
     Client.socket.emit('movePlayer',data);//////IM HERE TO RESTART
 };
 
@@ -29,7 +30,8 @@ Client.socket.on('myPlayer',function(data){
 });
 
 Client.socket.on('move',function(data){
-   Game.moveEnemy(data.id,data.x,data.y,data.angle); 
+    Game.moveEnemy(data.id,data.x,data.y,data.angle);
+    console.log("should have moved player");
 });
 
 Client.socket.on('allplayers',function(data){

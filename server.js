@@ -38,7 +38,7 @@ io.on('connection',function(socket){
 
         //On our click function we move a player
         socket.on('movePlayer',function(data){
-            //console.log('move to '+data.x+', '+data.y+', '+data.angle);
+            console.log('move to '+data.x+', '+data.y+', '+data.angle);
             socket.player.x = data.x;
             socket.player.y = data.y;
             socket.player.angle = data.angle;

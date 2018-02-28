@@ -13,7 +13,7 @@ Game.init = function(){
 Game.preload = function() {
     game.load.tilemap('map', 'assets/map/example_map.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.spritesheet('tileset', 'assets/map/tilesheet.png',32,32);
-    game.load.image('sprite','assets/sprites/ship.png');
+    game.load.image('sprite','assets/sprites/car.png');
     game.load.image('bullet', 'assets/sprites/bullet.png');
     cursors = game.input.keyboard.createCursorKeys();
 };
@@ -30,58 +30,57 @@ Game.create = function(){
     for(var i = 0; i < map.layers.length; i++) {
         layer = map.createLayer(i);
     }
-    me.game.physics.startSystem(Phaser.Physics.P2JS);
-    me.game.physics.p2.gravity.y = 0;
-    //Turn on impact events for the world, without this we get no collision callbacks
-    me.game.physics.p2.setImpactEvents(true);
-    me.game.physics.p2.restitution = 0.8;
-    me.game.physics.p2.updateBoundsCollisionGroup();
+    
    
     Game.createdPlayer = false;
     
-    var playerCollisionGroup = game.physics.p2.createCollisionGroup();
+    
+    weapon = game.add.weapon(10,'bullet');
+    weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+    weapon.bulletSpeed = 600;
     
     
-    //Create bullet group
-    Game.bulletCollisionGroup = game.physics.p2.createCollisionGroup();
-    
-    Game.bullets = game.add.group();
-    Game.bullets.enableBody = true;
-    Game.bullets.physicsBodyType = Phaser.Physics.P2JS;
-    Game.bullets.createMultiple(10, 'bullet', 0, false);
-    //Game.bullets.setALL('lifespan',1000);
-    
-    
-    
-    spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     
     Client.askNewPlayer();
     
 };
+var update = 0;
 
 Game.update = function(){
     if(Game.createdPlayer)
     {
-        if(cursors.left.isDown){Game.player.body.rotateLeft(100);}
-        else if(cursors.right.isDown){Game.player.body.rotateRight(100);}
-        else{Game.player.body.setZeroRotation();}
-        if(cursors.up.isDown){Game.player.body.thrust(200);}
-        else if(cursors.down.isDown){Game.player.body.reverse(100);}
-        //console.log(Game.player.body.rotation);
-        Client.movePlayer({x: Game.player.body.x, y: Game.player.body.y, angle: Game.player.body.rotation});
-        if(spaceKey.isDown)
+        if (cursors.up.isDown)
         {
-            var curBullet = Game.bullets.getFirstDead();
-            if(curBullet)
-            {
-                curBullet.lifespan = 2000;
-                curBullet.reset(Game.player.body.x,Game.player.body.y);
-                //Then the velocity code
-                curBullet.body.velocity.x = Game.player.body.x +5;
-                curBullet.body.velocity.y = Game.player.body.y +5;
-                //curBullet.setAll('lifespan',2000);
-            }
+            game.physics.arcade.accelerationFromRotation(Game.player.rotation, 300, Game.player.body.acceleration);
+            //Client.movePlayer(Game.player);
+            
         }
+        else
+        {
+            Game.player.body.acceleration.set(0);
+        }
+
+        if (cursors.left.isDown)
+        {
+            Game.player.body.angularVelocity = -300;
+        }
+        else if (cursors.right.isDown)
+        {
+            Game.player.body.angularVelocity = 300;
+        }
+        else
+        {
+            Game.player.body.angularVelocity = 0;
+        }
+
+        if (fireButton.isDown)
+        {
+            weapon.fire();
+        }
+        game.world.wrap(Game.player, 16);
+        
+        //Client.movePlayer(Game.player);
     }
 };
 
@@ -92,10 +91,11 @@ Game.moveEnemy = function(id,x,y,angle){
         enemy.body.x = x;
         enemy.body.y = y;
         enemy.body.rotation = angle;
+        console.log("moved player or should have");
     }
 };
 
-Game.createPlayer = function(id,x,y,angle){
+Game.createPlayer = function(id,x,y,angle){//Added arcade physics here
     Game.playerInfo = {
         id: id,
         x: x,
@@ -105,8 +105,12 @@ Game.createPlayer = function(id,x,y,angle){
     };
     Game.createdPlayer = true;
     Game.player = game.add.sprite(x,y,'sprite');
-    game.physics.p2.enableBody(Game.player, true);
+    game.physics.arcade.enable(Game.player);
     game.camera.follow(Game.player);
+    Game.player.body.drag.set(70);
+    Game.player.body.maxVelocity.set(200);
+    Game.player.anchor.set(0.5);
+    weapon.trackSprite(Game.player, 0, 0, true);
     
     
     
@@ -115,7 +119,10 @@ Game.createPlayer = function(id,x,y,angle){
 
 Game.addNewPlayer = function(id,x,y,angle){
     enemy = game.add.sprite(x,y,'sprite');
-    game.physics.p2.enableBody(enemy, true);
+    game.physics.arcade.enable(enemy);
+    enemy.body.drag.set(70);
+    enemy.body.maxVelocity.set(200);
+    enemy.anchor.set(0.5);
     Game.playerMap[id] = enemy;
     console.log("new player with location:"+ x + " ," + y);
 };
